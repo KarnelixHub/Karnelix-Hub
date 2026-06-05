@@ -113,7 +113,7 @@
             border: 1px solid #202433;
             border-radius: 28px;
             padding: 1.8rem 2rem;
-            margin-bottom: 2.8rem;
+            margin-bottom: 2rem;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -162,6 +162,72 @@
         .quote-author span {
             color: #9b7cff;
             font-weight: 600;
+        }
+
+        /* Search & Refresh Bar */
+        .search-bar-section {
+            background: #0f121c;
+            border: 1px solid #202433;
+            border-radius: 20px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .search-wrapper {
+            flex: 2;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #0a0d16;
+            border: 1px solid #2a2f45;
+            border-radius: 48px;
+            padding: 0.5rem 1rem;
+        }
+
+        .search-wrapper input {
+            background: transparent;
+            border: none;
+            color: #eef2ff;
+            font-size: 0.9rem;
+            width: 100%;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-wrapper input::placeholder {
+            color: #5c688e;
+        }
+
+        .search-icon {
+            color: #7c89b0;
+            font-size: 1.1rem;
+        }
+
+        .refresh-btn {
+            background: #1a1f30;
+            border: 1px solid #2f365a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            color: #cbd5ff;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-btn:hover {
+            background: #252c48;
+            border-color: #5865f2;
+            color: white;
         }
 
         .section-title {
@@ -379,7 +445,7 @@
             font-size: 0.8rem;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: 0.2s;
             text-decoration: none;
             display: block;
             width: 100%;
@@ -390,6 +456,17 @@
             border-color: #5f7f9e;
             color: white;
             transform: translateY(-1px);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #7c89b0;
+            font-size: 1rem;
+            background: #0f121c;
+            border-radius: 20px;
+            border: 1px solid #202433;
+            margin: 1rem 0;
         }
 
         .footer {
@@ -414,6 +491,10 @@
             .quote-text {
                 font-size: 1rem;
             }
+            .search-bar-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
         }
     </style>
 </head>
@@ -427,7 +508,6 @@
         </div>
     </div>
 
-    <!-- Banner Join KARNELIX HUB - đã xóa icon tròn -->
     <div class="join-banner">
         <div class="join-text">
             <span>Join <span>KARNELIX HUB</span>!</span>
@@ -441,6 +521,17 @@
     <div class="quote-section">
         <div class="quote-text">"The code is not just a set of instructions, it's a bridge between imagination and reality."</div>
         <div class="quote-author">— <span>KARNELIX</span> / Architect of the Hub</div>
+    </div>
+
+    <!-- Thanh tìm kiếm và nút làm mới -->
+    <div class="search-bar-section">
+        <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Tìm kiếm executor... (Volt, Solara, Xeno...)" autocomplete="off">
+        </div>
+        <button class="refresh-btn" id="refreshBtn">
+            <span>⟳</span> Làm mới dữ liệu
+        </button>
     </div>
 
     <div class="section-title">Windows Script Executor Exploits</div>
@@ -534,12 +625,13 @@
         ]
     };
 
+    // Render functions
     function renderNormalCard(exec) {
         const statusClass = exec.status === 'updated' ? 'updated' : 'not-updated';
         const statusText = exec.status === 'updated' ? 'Updated' : 'Not Updated';
         const downloadUrl = getDownloadLink(exec.name);
         return `
-            <div class="executor-card ${statusClass}">
+            <div class="executor-card ${statusClass}" data-name="${exec.name.toLowerCase()}">
                 <div class="card-header">
                     <div class="executor-name">${exec.name}</div>
                     <div class="status-badge ${statusClass}">${statusText}</div>
@@ -557,17 +649,75 @@
         const statusText = exec.status === 'updated' ? 'Updated' : 'Not Updated';
         const downloadUrl = getDownloadLink(exec.name);
         return `
-            <div class="ios-card">
+            <div class="ios-card" data-name="${exec.name.toLowerCase()}">
                 <div class="ios-header">
                     <div class="ios-name">${exec.name}</div>
                     <div class="ios-badge ${statusClass}">${statusText}</div>
                 </div>
-                <div class="ios-version"> version ${exec.version}</div>
+                <div class="ios-version">📲 version ${exec.version}</div>
                 <div class="ios-price">${exec.price}</div>
                 <div class="ios-date">Last updated: ${exec.lastUpdated}</div>
                 <a href="${downloadUrl}" class="ios-download" target="_blank" rel="noopener noreferrer">DOWNLOAD</a>
             </div>
         `;
+    }
+
+    // Filter function
+    function filterExecutors(searchTerm) {
+        const allCards = document.querySelectorAll('.executor-card, .ios-card');
+        let hasVisible = false;
+        
+        allCards.forEach(card => {
+            const name = card.getAttribute('data-name') || '';
+            if (name.includes(searchTerm)) {
+                card.style.display = '';
+                hasVisible = true;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Show/hide section titles based on visible cards in each section
+        const sections = document.querySelectorAll('.section-title');
+        sections.forEach(section => {
+            let nextGrid = section.nextElementSibling;
+            let hasVisibleInSection = false;
+            if (nextGrid && (nextGrid.classList.contains('executor-grid') || nextGrid.classList.contains('ios-grid'))) {
+                const cardsInSection = nextGrid.querySelectorAll('.executor-card, .ios-card');
+                cardsInSection.forEach(card => {
+                    if (card.style.display !== 'none') hasVisibleInSection = true;
+                });
+                section.style.display = hasVisibleInSection ? '' : 'none';
+            }
+        });
+    }
+
+    // Refresh data (simulate reload)
+    function refreshData() {
+        const btn = document.getElementById('refreshBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span>⟳</span> Đang làm mới...';
+        btn.disabled = true;
+        
+        setTimeout(() => {
+            // Clear search input
+            document.getElementById('searchInput').value = '';
+            // Show all cards
+            const allCards = document.querySelectorAll('.executor-card, .ios-card');
+            allCards.forEach(card => card.style.display = '');
+            // Show all section titles
+            const sections = document.querySelectorAll('.section-title');
+            sections.forEach(section => section.style.display = '');
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            
+            // Optional: show toast effect
+            btn.style.background = '#2a3155';
+            setTimeout(() => {
+                btn.style.background = '';
+            }, 200);
+        }, 500);
     }
 
     function renderAll() {
@@ -585,6 +735,16 @@
     }
 
     renderAll();
+    
+    // Event listeners for search and refresh
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.trim().toLowerCase();
+        filterExecutors(term);
+    });
+    
+    const refreshBtn = document.getElementById('refreshBtn');
+    refreshBtn.addEventListener('click', refreshData);
 </script>
 </body>
 </html>
