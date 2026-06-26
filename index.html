@@ -272,6 +272,205 @@
             padding-left: 1rem;
         }
 
+        /* ===== SHOP ACC ROBLOX ===== */
+        .shop-acc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .shop-card {
+            background: linear-gradient(135deg, #1a1f2e, #0f121c);
+            border: 1px solid #2d3348;
+            border-radius: 24px;
+            padding: 1.8rem 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shop-card::before {
+            content: '👾';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 6rem;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .shop-card:hover {
+            transform: translateY(-5px);
+            border-color: #7c3aed;
+            box-shadow: 0 12px 30px rgba(124, 58, 237, 0.15);
+        }
+
+        .shop-card .icon {
+            font-size: 3rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .shop-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #eef2ff;
+            margin-bottom: 0.3rem;
+        }
+
+        .shop-card .subtitle {
+            color: #8e9aaf;
+            font-size: 0.85rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .shop-card .price-tag {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #facc15;
+            margin-bottom: 0.5rem;
+        }
+
+        .shop-card .price-tag small {
+            font-size: 0.9rem;
+            color: #8e9aaf;
+            font-weight: 400;
+        }
+
+        .shop-card .stock {
+            font-size: 0.8rem;
+            color: #5eead4;
+            background: rgba(94, 234, 212, 0.1);
+            padding: 3px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .shop-card .btn-buy {
+            background: linear-gradient(135deg, #7c3aed, #5f9eff);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .shop-card .btn-buy:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+        }
+
+        .shop-card .btn-buy:active {
+            transform: scale(0.97);
+        }
+
+        /* ===== Account Display ===== */
+        .account-display {
+            background: linear-gradient(135deg, #0f121c, #1a1f2e);
+            border: 2px solid #7c3aed;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .account-display.show {
+            display: block;
+        }
+
+        .account-display h4 {
+            color: #7c3aed;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .account-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .account-row:last-child {
+            border-bottom: none;
+        }
+
+        .account-row .label {
+            color: #8e9aaf;
+            font-weight: 500;
+        }
+
+        .account-row .value {
+            color: #eef2ff;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .account-row .value.username {
+            color: #5f9eff;
+        }
+
+        .account-row .value.password {
+            color: #facc15;
+        }
+
+        .copy-btn {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #eef2ff;
+            padding: 4px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(124, 58, 237, 0.2);
+            border-color: #7c3aed;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(124, 58, 237, 0.95);
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: none;
+            animation: slideUp 0.5s ease;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
         .ios-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -559,6 +758,35 @@
         </button>
     </div>
 
+    <!-- ===== SHOP ACC ROBLOX ===== -->
+    <div class="section-title">🛒 Shop Acc Roblox Premium</div>
+    <div class="shop-acc-grid">
+        <div class="shop-card">
+            <div class="icon">👾</div>
+            <h3>Acc Roblox Premium</h3>
+            <div class="subtitle">Tài khoản chất lượng cao</div>
+            <div class="price-tag">50.000đ <small>/ acc</small></div>
+            <div class="stock">✅ Còn hàng</div>
+            <button class="btn-buy" onclick="purchaseAccount()">💳 Thanh toán ngay</button>
+            <div class="account-display" id="accountDisplay">
+                <h4>🎉 Chúc mừng bạn đã mua thành công!</h4>
+                <div class="account-row">
+                    <span class="label">👤 Tên đăng nhập</span>
+                    <span class="value username" id="username">thitkhoca</span>
+                    <button class="copy-btn" onclick="copyText('thitkhoca')">📋</button>
+                </div>
+                <div class="account-row">
+                    <span class="label">🔑 Mật khẩu</span>
+                    <span class="value password" id="password">luongdeptrai</span>
+                    <button class="copy-btn" onclick="copyText('luongdeptrai')">📋</button>
+                </div>
+                <div style="text-align:center; margin-top:10px; font-size:0.8rem; color:#8e9aaf;">
+                    ⚠️ Vui lòng đổi mật khẩu sau khi đăng nhập
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="section-title">Windows Script Executor Exploits</div>
     <div class="executor-grid" id="windowsGrid"></div>
 
@@ -579,63 +807,78 @@
     </div>
 </div>
 
+<!-- Toast thông báo -->
+<div class="toast" id="toast"></div>
+
 <script>
-    // Tạo hiệu ứng sao băng
+    // ===== SHOP ACC ROBLOX =====
+    function purchaseAccount() {
+        const display = document.getElementById('accountDisplay');
+        display.classList.add('show');
+        display.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        showToast('✅ Thanh toán thành công! Tài khoản đã được gửi đến bạn.');
+    }
+
+    function copyText(text) {
+        const tempInput = document.createElement('input');
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        showToast('📋 Đã sao chép: ' + text);
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(toast.timeout);
+        toast.timeout = setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
+    // ===== HIỆU ỨNG SAO BĂNG =====
     function createShootingStars() {
         const container = document.getElementById('starContainer');
-        const starCount = 35; // Số lượng sao
-        
+        const starCount = 35;
         for (let i = 0; i < starCount; i++) {
             const star = document.createElement('div');
             star.classList.add('star');
-            
-            // Kích thước ngẫu nhiên
             const size = Math.random() * 3 + 1;
             star.style.width = size + 'px';
             star.style.height = size + 'px';
-            
-            // Vị trí ngẫu nhiên
             star.style.left = Math.random() * 100 + '%';
-            
-            // Thời gian rơi ngẫu nhiên
             const duration = Math.random() * 4 + 2;
             star.style.animationDuration = duration + 's';
-            
-            // Độ trễ ngẫu nhiên
             const delay = Math.random() * 5;
             star.style.animationDelay = delay + 's';
-            
-            // Độ sáng ngẫu nhiên
             const opacity = Math.random() * 0.6 + 0.2;
             star.style.opacity = opacity;
-            
             container.appendChild(star);
         }
     }
-    
-    // Tạo thêm sao mới liên tục
+
     function addStarsContinuously() {
         setInterval(() => {
             const container = document.getElementById('starContainer');
             const star = document.createElement('div');
             star.classList.add('star');
-            
             const size = Math.random() * 2.5 + 0.5;
             star.style.width = size + 'px';
             star.style.height = size + 'px';
             star.style.left = Math.random() * 100 + '%';
             star.style.animationDuration = (Math.random() * 3 + 2) + 's';
             star.style.opacity = Math.random() * 0.5 + 0.2;
-            
             container.appendChild(star);
-            
-            // Xóa sao sau khi kết thúc animation
             setTimeout(() => {
                 if (star && star.remove) star.remove();
             }, 5000);
         }, 800);
     }
 
+    // ===== DỮ LIỆU EXECUTOR =====
     const downloadLinks = {
         "Volt": "https://voltbz.net/",
         "Potassium": "https://www.potassium.pro/",
@@ -757,7 +1000,7 @@
         sections.forEach(section => {
             let nextGrid = section.nextElementSibling;
             let hasVisibleInSection = false;
-            if (nextGrid && (nextGrid.classList.contains('executor-grid') || nextGrid.classList.contains('ios-grid'))) {
+            if (nextGrid && (nextGrid.classList.contains('executor-grid') || nextGrid.classList.contains('ios-grid') || nextGrid.classList.contains('shop-acc-grid'))) {
                 const cardsInSection = nextGrid.querySelectorAll('.executor-card, .ios-card');
                 cardsInSection.forEach(card => {
                     if (card.style.display !== 'none') hasVisibleInSection = true;
