@@ -23,7 +23,6 @@
             min-height: 100vh;
         }
 
-        /* Hiệu ứng sao băng */
         .shooting-star {
             position: fixed;
             top: 0;
@@ -89,6 +88,81 @@
             font-size: 0.85rem;
             color: #8e9aaf;
             margin-top: 4px;
+        }
+
+        /* ===== WALLET ===== */
+        .wallet-section {
+            background: linear-gradient(135deg, #1a1f2e, #0f121c);
+            border: 1px solid #2d3348;
+            border-radius: 16px;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .wallet-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .wallet-info .label {
+            color: #8e9aaf;
+            font-size: 0.9rem;
+        }
+
+        .wallet-info .balance {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #facc15;
+        }
+
+        .wallet-info .balance.zero {
+            color: #ef4444;
+        }
+
+        .wallet-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-topup {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border: none;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-topup:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border: none;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
         }
 
         .join-banner {
@@ -370,7 +444,12 @@
             transform: scale(0.97);
         }
 
-        /* ===== Account Display ===== */
+        .shop-card .btn-buy:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
         .account-display {
             background: linear-gradient(135deg, #0f121c, #1a1f2e);
             border: 2px solid #7c3aed;
@@ -444,8 +523,6 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(124, 58, 237, 0.95);
-            color: #fff;
             padding: 15px 30px;
             border-radius: 12px;
             font-weight: 600;
@@ -455,6 +532,21 @@
             z-index: 1000;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .toast.success {
+            background: rgba(34, 197, 94, 0.95);
+            color: #fff;
+        }
+
+        .toast.error {
+            background: rgba(239, 68, 68, 0.95);
+            color: #fff;
+        }
+
+        .toast.info {
+            background: rgba(124, 58, 237, 0.95);
+            color: #fff;
         }
 
         .toast.show {
@@ -718,6 +810,17 @@
                 flex-direction: column;
                 align-items: stretch;
             }
+            .wallet-section {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .wallet-info {
+                justify-content: center;
+            }
+            .wallet-actions {
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -731,6 +834,20 @@
         <div class="logo-area">
             <h1>KARNELIX HUB ⚡</h1>
             <p>Windows,Android,IOS,Mac Exploits</p>
+        </div>
+    </div>
+
+    <!-- ===== VÍ TIỀN ===== -->
+    <div class="wallet-section">
+        <div class="wallet-info">
+            <span class="label">💰 Số dư ví:</span>
+            <span class="balance zero" id="walletBalance">0đ</span>
+        </div>
+        <div class="wallet-actions">
+            <button class="btn-topup" onclick="topUpWallet(50000)">➕ Nạp 50.000đ</button>
+            <button class="btn-topup" onclick="topUpWallet(100000)">➕ Nạp 100.000đ</button>
+            <button class="btn-topup" onclick="topUpWallet(200000)">➕ Nạp 200.000đ</button>
+            <button class="btn-reset" onclick="resetWallet()">🗑️ Reset ví</button>
         </div>
     </div>
 
@@ -767,7 +884,7 @@
             <div class="subtitle">Tài khoản chất lượng cao</div>
             <div class="price-tag">50.000đ <small>/ acc</small></div>
             <div class="stock">✅ Còn hàng</div>
-            <button class="btn-buy" onclick="purchaseAccount()">💳 Thanh toán ngay</button>
+            <button class="btn-buy" id="buyBtn" onclick="purchaseAccount()">💳 Thanh toán ngay</button>
             <div class="account-display" id="accountDisplay">
                 <h4>🎉 Chúc mừng bạn đã mua thành công!</h4>
                 <div class="account-row">
@@ -811,12 +928,60 @@
 <div class="toast" id="toast"></div>
 
 <script>
+    // ===== VÍ TIỀN =====
+    let walletBalance = 0;
+    const ACCOUNT_PRICE = 50000;
+
+    function updateWalletUI() {
+        const balanceEl = document.getElementById('walletBalance');
+        balanceEl.textContent = walletBalance.toLocaleString('vi-VN') + 'đ';
+        if (walletBalance <= 0) {
+            balanceEl.className = 'balance zero';
+        } else {
+            balanceEl.className = 'balance';
+        }
+
+        // Cập nhật trạng thái nút mua
+        const buyBtn = document.getElementById('buyBtn');
+        if (walletBalance < ACCOUNT_PRICE) {
+            buyBtn.disabled = true;
+            buyBtn.textContent = '❌ Không đủ tiền (' + (ACCOUNT_PRICE - walletBalance).toLocaleString('vi-VN') + 'đ thiếu)';
+        } else {
+            buyBtn.disabled = false;
+            buyBtn.textContent = '💳 Thanh toán ngay';
+        }
+    }
+
+    function topUpWallet(amount) {
+        walletBalance += amount;
+        updateWalletUI();
+        showToast('✅ Nạp thành công ' + amount.toLocaleString('vi-VN') + 'đ vào ví!', 'success');
+    }
+
+    function resetWallet() {
+        walletBalance = 0;
+        updateWalletUI();
+        // Ẩn thông tin tài khoản cũ
+        document.getElementById('accountDisplay').classList.remove('show');
+        showToast('🗑️ Đã reset ví về 0đ', 'info');
+    }
+
     // ===== SHOP ACC ROBLOX =====
     function purchaseAccount() {
+        if (walletBalance < ACCOUNT_PRICE) {
+            showToast('❌ Không đủ tiền! Cần 50.000đ, bạn đang có ' + walletBalance.toLocaleString('vi-VN') + 'đ', 'error');
+            return;
+        }
+
+        // Trừ tiền
+        walletBalance -= ACCOUNT_PRICE;
+        updateWalletUI();
+
+        // Hiển thị tài khoản
         const display = document.getElementById('accountDisplay');
         display.classList.add('show');
         display.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        showToast('✅ Thanh toán thành công! Tài khoản đã được gửi đến bạn.');
+        showToast('✅ Thanh toán thành công! Tài khoản đã được gửi đến bạn.', 'success');
     }
 
     function copyText(text) {
@@ -826,13 +991,13 @@
         tempInput.select();
         document.execCommand('copy');
         document.body.removeChild(tempInput);
-        showToast('📋 Đã sao chép: ' + text);
+        showToast('📋 Đã sao chép: ' + text, 'info');
     }
 
-    function showToast(message) {
+    function showToast(message, type = 'info') {
         const toast = document.getElementById('toast');
         toast.textContent = message;
-        toast.classList.add('show');
+        toast.className = 'toast ' + type + ' show';
         clearTimeout(toast.timeout);
         toast.timeout = setTimeout(() => {
             toast.classList.remove('show');
@@ -1058,9 +1223,10 @@
     const refreshBtn = document.getElementById('refreshBtn');
     refreshBtn.addEventListener('click', refreshData);
 
-    // Khởi tạo hiệu ứng sao băng
+    // Khởi tạo hiệu ứng sao băng và ví
     createShootingStars();
     addStarsContinuously();
+    updateWalletUI();
 </script>
 </body>
 </html>
